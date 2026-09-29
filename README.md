@@ -22,12 +22,14 @@
         下一輪同一條不再收
 ```
 
+寫進產出庫時，分支是 main，工具是 GitHub 連接器的建立或更新檔案工具。
+
 ## 四個零件
 
-1. 例行題 `templates/routine_prompt.md`：每天交給雲端 bot 的題目。寫明領域、每輪幾格、先讀已解清單、產出格式、檔頭規則。
-2. 已解清單 `requests/solved_list.md`：解過的洞。範本在 `templates/solved_list.md`，用之前先複製過去再改。
+1. 例行題 `templates/routine_prompt.md`：每天交給雲端 bot 的題目。寫明領域、預設每輪 4 格（人工插單指定格數時以插單為準）、先讀已解清單、寫到哪個 owner／repo 的 main、用哪支連接器工具、產出格式、檔頭規則。具體問題由 bot 依領域那一句話自己挖。這是設計，不是缺漏。
+2. 已解清單 `requests/solved_list.md`：解過的洞。範本在 `templates/solved_list.md`，用之前先複製過去再改。範例兩列保留會被當成已解，正式用前刪掉。
 3. 產出檔 `inbox/dig/<YYYYMMDD>_<POOL>_r<round>c<cell>.md`：收回本機的每一洞。一檔一洞。
-4. 檔頭核對 `tools/verify_header.py`：重算第 4 行起的 SHA-256，跟第 3 行比。不一致就不要送去判斷。
+4. 檔頭核對 `tools/verify_header.py`：重算第 4 行起的 SHA-256，跟第 3 行比。不一致就不要送去判斷。整夾用 `tools/verify_all.py`，檢查同一套。
 
 事實要另人核對時，寫到 `requests/factcheck/<名>.md`，不要塞進產出檔。
 
@@ -55,11 +57,58 @@
 - 第 3 行去掉前後空白後，等於這個雜湊。大小寫都視為同一組十六進位，寫檔時用小寫。
 - 內文用 UTF-8。少於 4 行、或第 3 行不是 64 位十六進位，都算不符。
 
+## 從零設定（八步）
+
+照順序做。做完再排每天自動跑。
+
+1. 建一個雲端 AI bot。2026-09-29 這次實測用的是 Grok Bot。
+2. 接上 GitHub 連接器，完成一次授權。授權成功只代表連接器開通。bot 自述、未獨立驗證：權限來自那一次 GitHub OAuth，只能寫該帳號有寫入權的 repo；寫檔用連接器的建立或更新檔案工具（bot 自述的工具名類似 create_or_update_file）。精確 OAuth scope 未確認。
+3. 建一個私人產出庫，分支用 main。放進這些檔：
+   - `requests/solved_list.md`：從 `templates/solved_list.md` 複製。底下兩列範例保留會被當成已解，正式用前刪掉。
+   - `inbox/dig/`：產出寫在這裡。要讓空目錄進 git，放一個 `inbox/dig/.gitkeep`。
+   - `tools/verify_header.py`：從這份範本原樣複製。
+   - `.gitattributes`：從這份範本原樣複製。它讓產出檔保持原始換行，檔頭雜湊才對得起來。
+
+本機要整夾核對時，把 `tools/verify_all.py` 一起複製進去。
+4. 改例行題。複製 `templates/routine_prompt.md`，填領域、池名、owner、repo。預設每輪 4 格。人工插單指定格數時以插單為準。具體問題由 bot 依領域那一句話自己挖，範本不附題目清單。這是設計，不是缺漏。
+5. 在 Routines 建排程，題目裡寫明 owner、repo、分支 main。bot 自述、未獨立驗證：Routines 在 bot 資訊面板，點聊天標題上的 bot 名稱進去，填 cron 與時區。bot 只確定桌面／App 有這條路，網頁版是否相同未確認。例行題寫清三步：讀該 repo 的 main 上的 `requests/solved_list.md`，未解的寫到 `inbox/dig/`，用連接器的建立或更新檔案工具推上 main。
+6. 通知可選。Discord 或其他管道都可以接。不接也不影響挖洞與收件。不要把 token 貼進聊天，也不要寫進 repo。
+7. 先手動叫第一格。到產出庫的 main 看有沒有 `inbox/dig/<YYYYMMDD>_<POOL>_r<round>c<cell>.md`。
+8. 本機收件，用 `python tools/verify_header.py <檔>` 驗檔頭。印 `OK` 且離開碼是 0，才送給人判斷。
+
+新手最容易卡的地方：連接器授權已經成功，第一次寫檔仍失敗。常見是帳號或組織選錯、repo 沒有寫入權、檔案太大在句中被截斷。先核對 owner、repo、分支 main、寫入權，再看檔有沒有寫完。其次是例行題沒寫清「讀清單 → 寫到哪 → 用連接器推」，bot 就自己猜。
+
+## 本機收件
+
+從產出庫的 main 把新檔取回本機。clone 那個 repo，或只把 `inbox/dig/` 的新檔放到本機同名路徑，兩種都可以。
+
+單檔：
+
+```
+python tools/verify_header.py <檔>
+```
+
+整夾（該資料夾裡的 `*.md`。repo 根目錄的說明檔不是產出格式，整夾核對時指定 `inbox/dig` 或 `tests`）：
+
+```
+python tools/verify_all.py <資料夾>
+```
+
+印 `OK` 且離開碼 0 才送給人判斷。`MISMATCH` 退回。人決定要做、而且做完之後，在 `requests/solved_list.md` 的 `## 清單` 下追加一行，再推回產出庫的 main。清單留在本機、沒推回 main，下一輪仍會把同一個洞收回來。
+
+## 已驗證到哪
+
+- 2026-09-29 20:44：Grok Bot 照本範本寫一格，進私有測試庫 `dig-loop-selftest` 的 `inbox/dig/20260929_DEMO_r1c1.md`（commit `f6d0b58`）。`tools/verify_header.py` 驗為 OK。
+- Routines 的點擊路徑，以及 OAuth 的精確 scope，是 bot 自述，未獨立驗證。
+- 全新帳號從零走完上面八步，還沒有測過。
+
 ## 最小上手三步
 
-1. 複製 `templates/solved_list.md` 為 `requests/solved_list.md`。複製 `templates/routine_prompt.md`，把領域、池名、每輪格數改成你的。清單可以先只有標題、沒有資料列。
-2. 把填好的例行題設成雲端 bot 的每日題，讓它把未解的洞寫進 `inbox/dig/`。
-3. 檔案回到本機後執行 `python tools/verify_header.py <檔>`。印 `OK` 且離開碼是 0，才送給人判斷。做完的洞追加一行到已解清單。
+從零走上面八步。產出庫與例行題接好之後，每天是這三步。
+
+1. 已解清單放在產出庫 main 的 `requests/solved_list.md`。範例兩列保留會被當成已解，正式用前刪掉。
+2. 例行題寫明 owner、repo、分支 main，以及 GitHub 連接器的建立或更新檔案工具。未解的洞寫進該 repo 的 `inbox/dig/`。
+3. 檔案回到本機後執行 `python tools/verify_header.py <檔>`。印 `OK` 且離開碼是 0，才送給人判斷。做完的洞追加一行到已解清單，並推回 main。
 
 ## 已知弱點
 
@@ -78,6 +127,14 @@ python tools/verify_header.py tests/fixture_ok.md
 - 參數不是一個檔、或檔讀不到：離開碼 2，說明寫在標準錯誤。
 
 `tests/fixture_ok.md` 是一份正確夾具。`tests/fixture_mismatch.md` 是同一份夾具只把內文改一個字、第 3 行仍留舊雜湊，用來對照 `MISMATCH`。
+
+整夾：
+
+```
+python tools/verify_all.py tests
+```
+
+`verify_all.py` 對資料夾內每個 `*.md` 呼叫 `verify_header` 的同一套檢查。逐檔印 `OK <檔名>` 或 `MISMATCH <檔名>`。全部 OK 才離開碼 0。有任一不符，離開碼 1。參數不是一個資料夾、資料夾裡沒有 `*.md`、或檔讀不到，離開碼 2。上面這條會印一行 `OK`、一行 `MISMATCH`，離開碼 1。
 
 ## 授權
 
