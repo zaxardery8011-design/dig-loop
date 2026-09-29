@@ -6,13 +6,19 @@
 
 用 AI 幫你架的話，叫它先讀 `AGENTS.md`。
 
+建排程的教學很多。這裡多教一件事：確認它真的做完。
+
 ## 導覽
 
 跟平台無關的部分在 [docs/core.md](docs/core.md)。裡面是已解清單、產出路徑、三行檔頭、自驗。
 
 平台接頭在 [adapters/README.md](adapters/README.md)。Grok Bot 在 [adapters/grok-bot.md](adapters/grok-bot.md)。
 
-新手照課做。
+先看 [第 0 課。複製就能用](tutorial/00-複製就能用.md)。
+
+出問題看 [第 6 課。翻車檢查](tutorial/06-翻車檢查.md)。
+
+想要每天挖題目再看第 1 課到第 5 課。目錄在 [tutorial/README.md](tutorial/README.md)。
 
 1. [第 1 課。它能幫你做什麼](tutorial/01-它能幫你做什麼.md)
 2. [第 2 課。放好已解清單](tutorial/02-放好已解清單.md)
