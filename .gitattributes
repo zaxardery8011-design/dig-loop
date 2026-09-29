@@ -1,0 +1,3 @@
+# 產出檔與夾具的檔頭雜湊依原始位元組計算，禁止換行轉換
+tests/*.md -text
+inbox/dig/*.md -text
