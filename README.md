@@ -4,6 +4,8 @@
 
 這份目錄是給新手的範本。複製出去，填上自己的領域，就能讓一個雲端 AI bot 每天挖，再把結果收回本機。
 
+用 AI 幫你架的話，叫它先讀 `AGENTS.md`。
+
 ## 流程
 
 ```
@@ -135,6 +137,17 @@ python tools/verify_all.py tests
 ```
 
 `verify_all.py` 對資料夾內每個 `*.md` 呼叫 `verify_header` 的同一套檢查。逐檔印 `OK <檔名>` 或 `MISMATCH <檔名>`。全部 OK 才離開碼 0。有任一不符，離開碼 1。參數不是一個資料夾、資料夾裡沒有 `*.md`、或檔讀不到，離開碼 2。上面這條會印一行 `OK`、一行 `MISMATCH`，離開碼 1。
+
+## 相關工具
+
+- [execution-proofs](https://github.com/zaxardery8011-design/execution-proofs)：AI 說做完就查檔在不在、時間對不對
+- [task-ledger](https://github.com/zaxardery8011-design/task-ledger)：單機任務帳本防謊報進度
+- [soplint](https://github.com/zaxardery8011-design/soplint)：檢查 AI 有沒有守規矩
+- [aiwff-runtime](https://github.com/zaxardery8011-design/aiwff-runtime)：本機任務引擎
+- [minibrain-kit](https://github.com/zaxardery8011-design/minibrain-kit)：這家店怎麼用開源，給學生的 AI 讀
+- [line-persona](https://github.com/zaxardery8011-design/line-persona)：同一套「叫 AI 讀 AGENTS.md」做 LINE 分身
+
+覺得有用，歡迎點星。
 
 ## 授權
 
