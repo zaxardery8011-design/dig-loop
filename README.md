@@ -6,6 +6,32 @@
 
 用 AI 幫你架的話，叫它先讀 `AGENTS.md`。
 
+## 導覽
+
+跟平台無關的部分在 [docs/core.md](docs/core.md)。裡面是已解清單、產出路徑、三行檔頭、自驗。
+
+平台接頭在 [adapters/README.md](adapters/README.md)。Grok Bot 在 [adapters/grok-bot.md](adapters/grok-bot.md)。
+
+新手照課做。
+
+1. [第 1 課。它能幫你做什麼](tutorial/01-它能幫你做什麼.md)
+2. [第 2 課。放好已解清單](tutorial/02-放好已解清單.md)
+3. [第 3 課。填好例行題](tutorial/03-填好例行題.md)
+4. [第 4 課。讓它每天自己跑](tutorial/04-讓它每天自己跑.md)
+5. [第 5 課。怎麼知道它真的做完](tutorial/05-怎麼知道它真的做完.md)
+
+## 安全
+
+Bot 用的是你的登入權限。它不是一道安全邊界。
+
+建議開一個專用 repo。建議 GitHub 授權只給那個 repo。
+
+不要把 token 貼進聊天。也不要寫進 repo。
+
+## 費用
+
+依各平台方案，本 repo 不代為說明。
+
 ## 流程
 
 ```
@@ -73,7 +99,7 @@
 
 本機要整夾核對時，把 `tools/verify_all.py` 一起複製進去。
 4. 改例行題。複製 `templates/routine_prompt.md`，填領域、池名、owner、repo。預設每輪 4 格。人工插單指定格數時以插單為準。具體問題由 bot 依領域那一句話自己挖，範本不附題目清單。這是設計，不是缺漏。
-5. 在 Routines 建排程，題目裡寫明 owner、repo、分支 main。bot 自述、未獨立驗證：Routines 在 bot 資訊面板，點聊天標題上的 bot 名稱進去，填 cron 與時區。bot 只確定桌面／App 有這條路，網頁版是否相同未確認。例行題寫清三步：讀該 repo 的 main 上的 `requests/solved_list.md`，未解的寫到 `inbox/dig/`，用連接器的建立或更新檔案工具推上 main。
+5. 排程怎麼建，看 [adapters/grok-bot.md](adapters/grok-bot.md)。題目裡寫明 owner、repo、分支 main。例行題寫清三步：讀該 repo 的 main 上的 `requests/solved_list.md`，未解的寫到 `inbox/dig/`，用連接器的建立或更新檔案工具推上 main。點 bot 名稱開 Routines，未驗。網頁改排程不生效，未驗。
 6. 通知可選。Discord 或其他管道都可以接。不接也不影響挖洞與收件。不要把 token 貼進聊天，也不要寫進 repo。
 7. 先手動叫第一格。到產出庫的 main 看有沒有 `inbox/dig/<YYYYMMDD>_<POOL>_r<round>c<cell>.md`。
 8. 本機收件，用 `python tools/verify_header.py <檔>` 驗檔頭。印 `OK` 且離開碼是 0，才送給人判斷。
@@ -102,6 +128,7 @@ python tools/verify_all.py <資料夾>
 
 - 2026-09-29 20:44：Grok Bot 照本範本寫一格，進私有測試庫 `dig-loop-selftest` 的 `inbox/dig/20260929_DEMO_r1c1.md`（commit `f6d0b58`）。`tools/verify_header.py` 驗為 OK。
 - Routines 的點擊路徑，以及 OAuth 的精確 scope，是 bot 自述，未獨立驗證。
+- 2026-09-30。網頁版左側「自動化」與「新自動化」對話框有實查。見 [adapters/grok-bot.md](adapters/grok-bot.md)。點 bot 名稱開 Routines，未驗。網頁改排程不生效，未驗。
 - 全新帳號從零走完上面八步，還沒有測過。
 
 ## 最小上手三步
