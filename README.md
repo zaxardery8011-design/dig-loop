@@ -8,6 +8,8 @@
 
 建排程的教學很多。這裡多教一件事：確認它真的做完。
 
+只想讓 Grok Bot 每天做一件事，不需要挖洞迴圈，看 [grok-bot-routines-tw](https://github.com/zaxardery8011-design/grok-bot-routines-tw)。
+
 ## 導覽
 
 跟平台無關的部分在 [docs/core.md](docs/core.md)。裡面是已解清單、產出路徑、三行檔頭、自驗。
@@ -173,6 +175,7 @@ python tools/verify_all.py tests
 
 ## 相關工具
 
+- [grok-bot-routines-tw](https://github.com/zaxardery8011-design/grok-bot-routines-tw)：Grok Bot 排程一條龍，手機就能用，建完教你確認它真的做完
 - [execution-proofs](https://github.com/zaxardery8011-design/execution-proofs)：AI 說做完就查檔在不在、時間對不對
 - [task-ledger](https://github.com/zaxardery8011-design/task-ledger)：單機任務帳本防謊報進度
 - [soplint](https://github.com/zaxardery8011-design/soplint)：檢查 AI 有沒有守規矩
