@@ -1,4 +1,4 @@
-# AGENTS.md — 給使用者的 AI
+# AGENTS.md：給使用者的 AI
 
 > 這份是給 **AI** 讀的。人類封面在 `README.md`。使用者把這個 repo 丟過來，是要你先讀懂，再依 README 幫他架起來。
 
